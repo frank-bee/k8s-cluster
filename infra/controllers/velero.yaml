@@ -38,11 +38,11 @@ spec:
           bucket: home-prod-pg-backup
           config:
             region: eu-central-1
-      volumeSnapshotLocation:
-        - name: aws
-          provider: aws
-          config:
-            region: eu-central-1
+#      volumeSnapshotLocation:
+#        - name: aws
+#          provider: aws
+#          config:
+#            region: eu-central-1
 ---
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret

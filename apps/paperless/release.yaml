@@ -133,4 +133,6 @@ spec:
         enabled: true
         existingClaim: paperless
         globalMounts:
-          -  /library
+          - name: library
+            path: library         # if the chart expects “path”
+            mountPath: /library   # where to mount inside the container

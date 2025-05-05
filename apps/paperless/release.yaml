@@ -1,0 +1,134 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: paperless
+  namespace: paperless
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.3
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+
+  values:
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 100
+        fsGroup: 100
+        fsGroupChangePolicy: OnRootMismatch
+    controllers:
+      main:
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          securityContext:
+            supplementalGroups:
+              - 65542
+
+        containers:
+          main:
+            dependsOn:
+              - redis
+            image:
+              repository: ghcr.io/paperless-ngx/paperless-ngx
+              tag: 2.15.3
+            env:
+              PAPERLESS_URL: https://paperless.local
+              PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
+              PAPERLESS_PORT: "8000"
+              PAPERLESS_DATA_DIR: /library/data
+              PAPERLESS_MEDIA_ROOT: /library/media
+              PAPERLESS_OCR_LANGUAGES: fin eng
+              PAPERLESS_OCR_LANGUAGE: fin+eng
+              PAPERLESS_REDIS: redis://localhost:6379
+              PAPERLESS_TASK_WORKERS: 2
+              PAPERLESS_TIKA_ENABLED: 1
+              PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://localhost:3000
+              PAPERLESS_TIKA_ENDPOINT: http://localhost:9998
+              PAPERLESS_TIME_ZONE: Europe/Berlin
+              USERMAP_UID: "1026"
+              USERMAP_GID: "100"
+              PAPERLESS_ACCOUNT_ALLOW_SIGNUPS: "false"
+              PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS: "false"
+              PAPERLESS_DISABLE_REGULAR_LOGIN: "true"
+              PAPERLESS_OCR_USER_ARGS: '{"invalidate_digital_signatures": true}'
+            envFrom:
+              - secretRef:
+                  name: paperless-secret
+            resources:
+              requests:
+                memory: 2Gi
+                cpu: 100m
+              limits:
+                memory: 2Gi
+          gotenberg:
+            image:
+              repository: gotenberg/gotenberg
+              tag: 8.20.1
+              pullPolicy: IfNotPresent
+            ports:
+              - containerPort: 3000
+            command:
+              - "gotenberg"
+              - "--chromium-disable-javascript=true"
+              - "--chromium-allow-list=file:///tmp/.*"
+            resources:
+              limits:
+                cpu: 500m
+                memory: 512Mi
+              requests:
+                cpu: 10m
+                memory: 512Mi
+          tika:
+            image:
+              repository: ghcr.io/paperless-ngx/tika
+              tag: 2.9.1-minimal
+              pullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9998
+            resources:
+              limits:
+                memory: 512Mi
+              requests:
+                memory: 512Mi
+                cpu: 10m
+          redis:
+            image:
+              repository: public.ecr.aws/docker/library/redis
+              tag: 7.4.3
+            ports:
+              - containerPort: 6379
+            env:
+              REDIS_REPLICATION_MODE: master
+            command: [ "redis-server" ]
+    service:
+      main:
+        controller: main
+        ports:
+          http:
+            port: 8000
+    persistence:
+      library:
+        enabled: true
+        globalMounts:
+          - path: /library

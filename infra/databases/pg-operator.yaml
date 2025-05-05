@@ -3,9 +3,10 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: cloudnative-pg
-  namespace: databases
+  namespace: pg-operator
 spec:
   interval: 15m
+  createNamespace: true
   chart:
     spec:
       chart: cloudnative-pg

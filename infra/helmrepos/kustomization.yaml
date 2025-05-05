@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
 - ./bjw-s.yaml
 - ./cloud-native-pg.yaml
+- ./velero.yaml

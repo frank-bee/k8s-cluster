@@ -131,5 +131,4 @@ spec:
       library:
         enabled: true
         existingClaim: paperless
-        globalMounts:
-          - path: /library
+        mountPath: /library

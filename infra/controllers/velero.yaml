@@ -21,6 +21,7 @@ spec:
         name: velero
         namespace: flux-system
   values:
+    cleanUpCRDs: true
     credentials:
       existingSecret: velero-credentials
     # Core Velero configuration
@@ -30,6 +31,11 @@ spec:
         - name: aws
           provider: aws
           bucket: home-prod-pg-backup
+          config:
+            region: eu-central-1
+      volumeSnapshotLocation:
+        - name: aws
+          provider: aws
           config:
             region: eu-central-1
 ---

@@ -10,7 +10,6 @@ metadata:
   namespace: pg-operator
 spec:
   interval: 15m
-  createNamespace: true
   chart:
     spec:
       chart: cloudnative-pg

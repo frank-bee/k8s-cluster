@@ -130,5 +130,6 @@ spec:
     persistence:
       library:
         enabled: true
+        type: pvc
         existingClaim: paperless
         mountPath: /library

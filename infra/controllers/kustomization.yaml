@@ -4,5 +4,4 @@ namespace: external-secrets
 resources:
   - external-secrets.yaml
   - provider.yaml
-  - velero-ext-secret.yaml
   - velero.yaml

@@ -4,7 +4,6 @@ kind: Namespace
 metadata:
   name: velero
 ---
-
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
@@ -31,3 +30,26 @@ spec:
         bucket: velero-backups
         config:
           region: eu-central-1
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: velero-ext-secret
+  namespace: velero
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: parameterstore
+    kind: ClusterSecretStore
+  target:
+    name: velero-credentials
+    creationPolicy: Owner
+  data:
+    - secretKey: aws_access_key_id
+      remoteRef:
+        key: home-prod-s3backup-key_id
+        property: aws_access_key_id
+    - secretKey: aws_secret_access_key
+      remoteRef:
+        key: home-prod-s3backup_access_key
+        property: aws_secret_access_key

@@ -8,3 +8,13 @@ spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:16
   storage:
     size: 10Gi
+  backup:
+    barmanObjectStore:
+      destinationPath: "s3://home-prod-pg-backup/backup/paperless"
+      s3Credentials:
+        accessKeyId:
+          name: aws-creds
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: aws-creds
+          key: ACCESS_SECRET_KEY

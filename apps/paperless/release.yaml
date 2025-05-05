@@ -69,9 +69,9 @@ spec:
               PAPERLESS_TIME_ZONE: Europe/Berlin
               USERMAP_UID: "1026"
               USERMAP_GID: "100"
-              PAPERLESS_ACCOUNT_ALLOW_SIGNUPS: "false"
-              PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS: "false"
-              PAPERLESS_DISABLE_REGULAR_LOGIN: "true"
+              PAPERLESS_ACCOUNT_ALLOW_SIGNUPS: "true"
+              PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS: "true"
+              PAPERLESS_DISABLE_REGULAR_LOGIN: "false"
               PAPERLESS_OCR_USER_ARGS: '{"invalidate_digital_signatures": true}'
             envFrom:
               - secretRef:

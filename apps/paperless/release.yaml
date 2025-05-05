@@ -131,7 +131,6 @@ spec:
     persistence:
       library:
         enabled: true
-        type: persistentVolumeClaim
         existingClaim: paperless
         globalMounts:
           -  /library

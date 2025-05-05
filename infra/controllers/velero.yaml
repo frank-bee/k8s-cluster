@@ -27,7 +27,7 @@ spec:
     # Core Velero configuration
     configuration:
       # Backup storage locations
-      backupStorageLocations:
+      backupStorageLocation:
         - name: aws
           provider: aws
           bucket: home-prod-pg-backup

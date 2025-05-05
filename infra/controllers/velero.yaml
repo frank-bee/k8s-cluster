@@ -24,7 +24,12 @@ spec:
     cleanUpCRDs: true
     credentials:
       existingSecret: velero-credentials
-    # Core Velero configuration
+    initContainers:
+      - name: velero-plugin-for-aws
+        image: velero/velero-plugin-for-aws:v1.12
+        volumeMounts:
+          - name: plugins
+            mountPath: /target
     configuration:
       # Backup storage locations
       backupStorageLocation:

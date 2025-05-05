@@ -23,11 +23,8 @@ spec:
   values:
     credentials:
       existingSecret: velero-credentials
-
     # Core Velero configuration
     configuration:
-      provider: aws
-
       # Backup storage locations
       backupStorageLocations:
         - name: aws

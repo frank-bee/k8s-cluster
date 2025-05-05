@@ -23,13 +23,18 @@ spec:
   values:
     credentials:
       existingSecret: velero-credentials
+
+    # Core Velero configuration
     configuration:
       provider: aws
-      backupStorageLocation:
-        name: aws
-        bucket: velero-backups
-        config:
-          region: eu-central-1
+
+      # Backup storage locations
+      backupStorageLocations:
+        - name: aws
+          provider: aws
+          bucket: home-prod-pg-backup
+          config:
+            region: eu-central-1
 ---
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret

@@ -12,6 +12,7 @@ _... managed with Flux_ 🤖
 |--------------------------------------------------------------------|---------------------------------------------------------------------|
 | [flux](https://toolkit.fluxcd.io/)                                 | Operator that manages your k8s cluster based on your Git repository |
 |[external-secrets](https://github.com/external-secrets/external-secrets) | Kubernetes Operator for external secrets management |
+|[cloudnative-pg](https://github.com/cloudnative-pg/cloudnative-pg) | Kubernetes Operator for PostgreSQL |
 
 ## 💻 Nodes
 | Node                          | Hostname | RAM  | Storage                                            | Function    | Operating System |

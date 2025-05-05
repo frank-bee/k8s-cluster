@@ -56,8 +56,6 @@ spec:
     - secretKey: aws_access_key_id
       remoteRef:
         key: home-prod-s3backup-key_id
-        property: aws_access_key_id
     - secretKey: aws_secret_access_key
       remoteRef:
         key: home-prod-s3backup_access_key
-        property: aws_secret_access_key

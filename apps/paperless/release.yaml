@@ -131,5 +131,6 @@ spec:
       library:
         enabled: true
         type: pvc
-        globalMounts:
-          - path: /library
+        accessMode: ReadWriteOnce
+        size: 10Gi
+        mountPath: /library

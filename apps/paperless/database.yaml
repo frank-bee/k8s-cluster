@@ -29,3 +29,12 @@ spec:
   backupOwnerReference: self
   cluster:
     name: paperless-db
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Backup
+metadata:
+  name: backup-initial
+  namespace: paperless
+spec:
+  cluster:
+    name: paperless-db

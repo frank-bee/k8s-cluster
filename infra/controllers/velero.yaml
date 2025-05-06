@@ -23,6 +23,7 @@ spec:
   values:
     cleanUpCRDs: true
     credentials:
+      useSecret: true
       existingSecret: velero-credentials
     initContainers:
       - name: velero-plugin-for-aws

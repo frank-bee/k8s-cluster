@@ -55,22 +55,22 @@ spec:
     name: parameterstore
     kind: ClusterSecretStore
     # 1) fetch these two values from AWS ParameterStore
-    data:
-      - secretKey: aws_access_key_id
-        remoteRef:
-          key: home-prod-s3backup-key_id
-      - secretKey: aws_secret_access_key
-        remoteRef:
-          key: home-prod-s3backup_access_key
-    target:
-      name: velero-credentials
-      creationPolicy: Owner
-      template:
-        engineVersion: v2
-        data:
-          # this is the only key Velero will read
-          cloud: |-
-            [default]
-            aws_access_key_id={{ .aws_access_key_id }}
-            aws_secret_access_key={{ .aws_secret_access_key }}
-            region=eu-central-1
+  data:
+    - secretKey: aws_access_key_id
+      remoteRef:
+        key: home-prod-s3backup-key_id
+    - secretKey: aws_secret_access_key
+      remoteRef:
+        key: home-prod-s3backup_access_key
+  target:
+    name: velero-credentials
+    creationPolicy: Owner
+    template:
+      engineVersion: v2
+      data:
+        # this is the only key Velero will read
+        cloud: |-
+          [default]
+          aws_access_key_id={{ .aws_access_key_id }}
+          aws_secret_access_key={{ .aws_secret_access_key }}
+          region=eu-central-1

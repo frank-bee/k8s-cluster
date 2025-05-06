@@ -2,7 +2,7 @@ apiVersion: velero.io/v1
 kind: Backup
 metadata:
   name: paperless-test-backup5
-  namespace: paperless
+  namespace: velero
 spec:
   storageLocation: aws
   includedNamespaces:

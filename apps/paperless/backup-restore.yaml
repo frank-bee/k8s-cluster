@@ -1,0 +1,65 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: paperless-restore-from-s3
+  namespace: paperless
+spec:
+  schedule: "0 0 31 2 *" # Only runs on Feb 31st, which never occurs
+  suspend: true           # Prevents the job from running automatically
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          serviceAccountName: paperless-backup-sa
+          restartPolicy: Never
+          volumes:
+            - name: restore-volume
+              emptyDir: {}
+          containers:
+            - name: s3restore
+              image: amazon/aws-cli:2.15.34
+              env:
+                - name: AWS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: aws-creds
+                      key: ACCESS_KEY_ID
+                - name: AWS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: aws-creds
+                      key: ACCESS_SECRET_KEY
+                - name: AWS_DEFAULT_REGION
+                  value: eu-central-1
+              command:
+                - sh
+                - -c
+                - |
+                  set -e
+                  echo "[INFO] Restoring backup from S3..."
+                  # Specify the restore path for the desired backup (edit as needed for timestamped folders)
+                  export YEAR_MONTH=$(date +%Y-%m)
+                  aws s3 sync s3://home-prod-pg-backup/paperless-export/$YEAR_MONTH/ /restore/
+                  echo "[INFO] S3 restore completed."
+              volumeMounts:
+                - name: restore-volume
+                  mountPath: /restore
+            - name: importer
+              image: bitnami/kubectl:1.27
+              command:
+                - sh
+                - -c
+                - |
+                  set -e
+                  echo "[INFO] Locating Paperless pod..."
+                  PAPERLESS_POD=$(kubectl get pod -n paperless -l app.kubernetes.io/name=paperless -o jsonpath='{.items[0].metadata.name}')
+                  echo "[INFO] Found pod: $PAPERLESS_POD"
+                  echo "[INFO] Copying restore data into pod..."
+                  kubectl cp /restore/. paperless/$PAPERLESS_POD:/library/import/
+                  echo "[INFO] Running document_importer inside pod..."
+                  kubectl exec -n paperless "$PAPERLESS_POD" -c main -- document_importer /library/import
+                  echo "[INFO] Restore completed."
+              volumeMounts:
+                - name: restore-volume
+                  mountPath: /restore

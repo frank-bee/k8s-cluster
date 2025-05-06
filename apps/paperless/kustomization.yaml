@@ -8,3 +8,4 @@ resources:
   - ext-secret.yaml
   - ext-secret-s3.yaml
   - backup.yaml
+  - backup-restore.yaml

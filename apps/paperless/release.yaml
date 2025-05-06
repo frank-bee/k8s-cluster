@@ -41,10 +41,9 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
           backup.velero.io/backup-volumes: "library"
-        labels:
-          velerobackup: yes
-
         pod:
+          labels:
+            velerobackup: yes
           securityContext:
             supplementalGroups:
               - 65542

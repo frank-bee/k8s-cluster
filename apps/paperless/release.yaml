@@ -40,10 +40,11 @@ spec:
         strategy: Recreate
         annotations:
           reloader.stakater.com/auto: "true"
-          backup.velero.io/backup-volumes: "library"
         pod:
           labels:
             velerobackup: yes
+          annotations:
+            backup.velero.io/backup-volumes: "library"
           securityContext:
             supplementalGroups:
               - 65542

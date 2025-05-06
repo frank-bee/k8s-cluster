@@ -1,0 +1,67 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: paperless-backup-via-kubectl
+  namespace: paperless
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      serviceAccountName: paperless-backup-sa    # needs exec & get pods, cp permissions
+      restartPolicy: Never
+      volumes:
+        - name: export-volume
+          emptyDir: {}
+      containers:
+        - name: exporter
+          image: bitnami/kubectl:1.27                # kubectl with in-cluster config
+          command:
+            - sh
+            - -c
+            - |
+              # Find the Paperless pod name by label selector
+              PAPERLESS_POD=$(kubectl get pod -n paperless -l app.kubernetes.io/name=paperless -o jsonpath='{.items[0].metadata.name}')
+              # 1. Run the exporter inside the live Paperless pod
+              kubectl exec -n paperless "$PAPERLESS_POD" \
+                -c main -- document_exporter /tmp/export
+              # 2. Copy the export out of the pod into our shared volume
+              kubectl cp paperless/"$PAPERLESS_POD":/tmp/export /export
+          volumeMounts:
+            - name: export-volume
+              mountPath: /export
+---
+# 1. ServiceAccount for backup jobs
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: paperless-backup-sa
+  namespace: paperless
+---
+# 2. Role granting get/list on pods and exec on pods
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: paperless-backup-role
+  namespace: paperless
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["create", "get"]
+---
+# 3. Bind the Role to the ServiceAccount
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: paperless-backup-rb
+  namespace: paperless
+subjects:
+  - kind: ServiceAccount
+    name: paperless-backup-sa
+    namespace: paperless
+roleRef:
+  kind: Role
+  name: paperless-backup-role
+  apiGroup: rbac.authorization.k8s.io

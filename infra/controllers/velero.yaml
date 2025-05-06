@@ -57,10 +57,12 @@ spec:
   target:
     name: velero-credentials
     creationPolicy: Owner
-  data:
-    - secretKey: aws_access_key_id
-      remoteRef:
-        key: home-prod-s3backup-key_id
-    - secretKey: aws_secret_access_key
-      remoteRef:
-        key: home-prod-s3backup_access_key
+    # Use the built-in templating engine to assemble the .aws/credentials file
+    template:
+      type: Opaque
+      data:
+        cloud: |-
+          [default]
+          aws_access_key_id={{ .RemoteRef "home-prod-s3backup-key_id" }}
+          aws_secret_access_key={{ .RemoteRef "home-prod-s3backup_access_key" }}
+          region=eu-central-1

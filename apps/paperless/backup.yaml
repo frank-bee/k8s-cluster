@@ -1,20 +1,20 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: paperless-backup-via-kubectl11
+  name: paperless-backup-111
   namespace: paperless
 spec:
   backoffLimit: 1
   template:
     spec:
-      serviceAccountName: paperless-backup-sa    # needs exec & get pods, cp permissions
+      serviceAccountName: paperless-backup-sa
       restartPolicy: Never
       volumes:
         - name: export-volume
           emptyDir: {}
-      containers:
+      initContainers:
         - name: exporter
-          image: bitnami/kubectl:1.27                # kubectl with in-cluster config
+          image: bitnami/kubectl:1.27
           command:
             - sh
             - -c
@@ -30,6 +30,33 @@ spec:
               echo "[INFO] Copying exported data from pod to shared volume..."
               kubectl cp paperless/"$PAPERLESS_POD":/library/export/. /export/
               echo "[INFO] Export completed successfully."
+          volumeMounts:
+            - name: export-volume
+              mountPath: /export
+      containers:
+        - name: s3sync
+          image: amazon/aws-cli:2.15.34
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-creds
+                  key: ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-creds
+                  key: ACCESS_SECRET_KEY
+            - name: AWS_DEFAULT_REGION
+              value: eu-central-1
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              echo "[INFO] Syncing backup to S3..."
+              aws s3 sync /export s3://home-prod-pg-backup/paperless-export/
+              echo "[INFO] S3 sync completed."
           volumeMounts:
             - name: export-volume
               mountPath: /export

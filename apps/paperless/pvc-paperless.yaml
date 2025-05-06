@@ -4,7 +4,7 @@ metadata:
   name: paperless
   namespace: paperless
   labels:
-    backup: paperless-pvc
+    velero-backup: true
 spec:
   accessModes:
     - ReadWriteOnce
@@ -12,3 +12,20 @@ spec:
     requests:
       storage: 10Gi
   # storageClassName: <your-storage-class> # Uncomment and set if needed
+---
+apiVersion: velero.io/v1
+kind: Backup
+metadata:
+  name: paperless-test-backup
+  namespace: velero
+spec:
+  storageLocation: aws
+  includedNamespaces:
+    - paperless
+  includedResources:
+    - persistentvolumeclaims
+    - pods
+  labelSelector:
+    matchLabels:
+      velero-backup: true
+  snapshotVolumes: false

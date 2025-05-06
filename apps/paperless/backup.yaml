@@ -13,5 +13,5 @@ spec:
     - pods
   labelSelector:
     matchLabels:
-      velero-backup: true
+      velerobackup: yes
   snapshotVolumes: false

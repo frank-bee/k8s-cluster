@@ -4,7 +4,7 @@ metadata:
   name: paperless
   namespace: paperless
   labels:
-    velero-backup: true
+    velerobackup: yes
 spec:
   accessModes:
     - ReadWriteOnce

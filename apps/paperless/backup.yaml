@@ -13,3 +13,11 @@ spec:
   labelSelector:
     matchLabels:
       velerobackup: yes
+---
+apiVersion: velero.io/v1
+kind: Restore
+metadata:
+  name: paperless-test-restore12
+  namespace: velero
+spec:
+  backupName: paperless-test-backup12

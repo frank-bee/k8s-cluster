@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
   - external-secrets.yaml
   - provider.yaml
-  - velero.yaml
+#  - velero.yaml

@@ -17,25 +17,8 @@ spec:
 apiVersion: velero.io/v1
 kind: Restore
 metadata:
-  name: paperless-test-restore12-2
+  name: paperless-test-restore12-3
   namespace: velero
 spec:
   # Reference the backup you created earlier
   backupName: paperless-test-backup12
-
-  # Only restore objects in the "paperless" namespace
-  includedNamespaces:
-    - paperless
-
-  # Only restore these resource types
-  includedResources:
-    - pods
-    - persistentvolumeclaims
-
-  # Only restore objects matching this label selector
-  labelSelector:
-    matchLabels:
-      velerobackup: yes
-
-  # Recreate PersistentVolumes for any restored PVCs
-  restorePVs: true

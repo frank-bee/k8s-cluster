@@ -10,3 +10,16 @@ spec:
     requests:
       storage: 10Gi
   # storageClassName: <your-storage-class> # Uncomment and set if needed
+---
+apiVersion: velero.io/v1
+kind: Backup
+metadata:
+  name: paperless-pvc-backup
+  namespace: velero
+spec:
+  includedNamespaces:
+    - paperless
+  includedResources:
+    - persistentvolumeclaims
+    - persistentvolumes
+  storageLocation: aws

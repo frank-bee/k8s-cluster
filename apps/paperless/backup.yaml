@@ -1,7 +1,7 @@
 apiVersion: velero.io/v1
 kind: Backup
 metadata:
-  name: paperless-test-backup10
+  name: paperless-test-backup11
   namespace: velero
 spec:
   storageLocation: aws
@@ -10,3 +10,6 @@ spec:
   includedResources:
     - pods
     - persistentvolumeclaims
+  labelSelector:
+    matchLabels:
+      velerobackup: yes

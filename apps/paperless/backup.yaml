@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: paperless-backup-via-kubectl10
+  name: paperless-backup-via-kubectl11
   namespace: paperless
 spec:
   backoffLimit: 1

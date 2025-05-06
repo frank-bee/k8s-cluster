@@ -3,8 +3,8 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - database.yaml
- # - pvc-paperless.yaml
- # - release.yaml
+  - pvc-paperless.yaml
+  - release.yaml
   - ext-secret.yaml
   - backup.yaml
   - backup-restore.yaml

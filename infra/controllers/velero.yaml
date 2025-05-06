@@ -38,6 +38,7 @@ spec:
           provider: aws
           bucket: home-prod-pg-backup
           prefix: velero
+          default: true
           config:
             region: eu-north-1
       volumeSnapshotLocation:

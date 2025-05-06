@@ -55,7 +55,8 @@ spec:
             - |
               set -e
               echo "[INFO] Syncing backup to S3..."
-              aws s3 sync /export s3://home-prod-pg-backup/paperless-export/
+              export YEAR_MONTH=$(date +%Y-%m)
+              aws s3 sync /export s3://home-prod-pg-backup/paperless-export/$YEAR_MONTH/
               echo "[INFO] S3 sync completed."
           volumeMounts:
             - name: export-volume

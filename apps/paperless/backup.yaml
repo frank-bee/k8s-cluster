@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: paperless-backup-via-kubectl4
+  name: paperless-backup-via-kubectl5
   namespace: paperless
 spec:
   backoffLimit: 1
@@ -23,12 +23,10 @@ spec:
               echo "[INFO] Locating Paperless pod..."
               PAPERLESS_POD=$(kubectl get pod -n paperless -l app.kubernetes.io/name=paperless -o jsonpath='{.items[0].metadata.name}')
               echo "[INFO] Found pod: $PAPERLESS_POD"
-              echo "[INFO] Creating export directory in pod..."
-              kubectl exec -n paperless "$PAPERLESS_POD" -c main -- mkdir -p /tmp/export
               echo "[INFO] Running document_exporter inside pod..."
-              kubectl exec -n paperless "$PAPERLESS_POD" -c main -- document_exporter /tmp/export
+              kubectl exec -n paperless "$PAPERLESS_POD" -c main -- document_exporter /library/export
               echo "[INFO] Copying exported data from pod to shared volume..."
-              kubectl cp paperless/"$PAPERLESS_POD":/tmp/export/. /export/
+              kubectl cp paperless/"$PAPERLESS_POD":/library/export/. /export/
               echo "[INFO] Export completed successfully."
           volumeMounts:
             - name: export-volume

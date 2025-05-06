@@ -6,4 +6,3 @@ resources:
   - pvc-paperless.yaml
   - release.yaml
   - ext-secret.yaml
-#  - backup.yaml

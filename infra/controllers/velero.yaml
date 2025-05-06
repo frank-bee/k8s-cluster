@@ -31,6 +31,10 @@ spec:
         volumeMounts:
           - name: plugins
             mountPath: /target
+    # Whether to create volumesnapshotlocation crd, if false => disable snapshot feature
+    snapshotsEnabled: false
+    # Whether to deploy the node-agent daemonset.
+    deployNodeAgent: true
     configuration:
       # Backup storage locations
       backupStorageLocation:
@@ -39,11 +43,6 @@ spec:
           bucket: home-prod-pg-backup
           prefix: velero
           default: true
-          config:
-            region: eu-north-1
-      volumeSnapshotLocation:
-        - name: aws
-          provider: aws
           config:
             region: eu-north-1
 ---

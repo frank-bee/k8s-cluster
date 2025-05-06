@@ -3,6 +3,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: paperless
   namespace: paperless
+  labels:
+    backup: paperless-pvc
 spec:
   accessModes:
     - ReadWriteOnce
@@ -17,9 +19,13 @@ metadata:
   name: paperless-pvc-backup
   namespace: velero
 spec:
+  storageLocation: aws
   includedNamespaces:
     - paperless
   includedResources:
     - persistentvolumeclaims
     - persistentvolumes
-  storageLocation: aws
+  labelSelector:
+    matchLabels:
+      backup: paperless-pvc
+  snapshotVolumes: false

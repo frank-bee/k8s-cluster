@@ -30,6 +30,12 @@ spec:
           secretAccessKey:
             name: aws-creds
             key: ACCESS_SECRET_KEY
+  bootstrap:
+    initdb:
+      database: paperless
+      owner: paperless
+      secret:
+        name: db-creds
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
@@ -50,3 +56,12 @@ metadata:
 spec:
   cluster:
     name: paperless-db
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: paperless-db-user
+  namespace: paperless
+stringData:
+  username: paperlessuser
+  password: "my_strong_password_123"

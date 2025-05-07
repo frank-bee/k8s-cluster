@@ -16,7 +16,7 @@ spec:
           volumes:
             - name: restore-volume
               emptyDir: {}
-          containers:
+          initContainers:
             - name: s3restore
               image: amazon/aws-cli:2.15.34
               env:
@@ -46,6 +46,7 @@ spec:
               volumeMounts:
                 - name: restore-volume
                   mountPath: /restore
+          containers:
             - name: importer
               image: bitnami/kubectl:1.27
               command:

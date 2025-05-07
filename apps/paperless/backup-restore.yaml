@@ -39,8 +39,9 @@ spec:
                   set -e
                   echo "[INFO] Restoring backup from S3..."
                   # Specify the restore path for the desired backup (edit as needed for timestamped folders)
-                  export YEAR_MONTH=$(date +%Y-%m)
-                  aws s3 sync s3://home-prod-pg-backup/paperless-export/$YEAR_MONTH/ /restore/
+                  export YEAR=$(date +%Y)
+                  export MONTH=$(date +%m)
+                  aws s3 sync s3://home-prod-pg-backup/paperless-export/$YEAR/$MONTH/ /restore/
                   echo "[INFO] S3 restore completed."
               volumeMounts:
                 - name: restore-volume

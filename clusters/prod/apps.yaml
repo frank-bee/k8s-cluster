@@ -13,4 +13,4 @@ spec:
   postBuild:
     substituteFrom:
       - kind: Secret
-        name: flux-secret-vars2
+        name: flux-secret-vars

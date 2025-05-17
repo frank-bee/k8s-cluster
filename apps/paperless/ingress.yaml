@@ -8,7 +8,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: ${paperless_route}
+      match: Host(`${paperless_route}`)
       services:
         - kind: Service
           name: paperless

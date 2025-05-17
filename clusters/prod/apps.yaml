@@ -11,8 +11,6 @@ spec:
     kind: GitRepository
     name: flux-system
   postBuild:
-    substitute:
-      PAPERLESS_URL: paperless.example.com
-#    substituteFrom:
-#      - kind: Secret
-#        name: flux-secret-vars
+    substituteFrom:
+      - kind: Secret
+        name: flux-secret-vars

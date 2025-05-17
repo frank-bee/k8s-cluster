@@ -1,3 +1,4 @@
 /.idea/
 /apps/paperless/secret.yaml
 /infra/controllers/awssm-secret.yaml
+/secret-vars.yaml

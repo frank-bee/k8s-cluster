@@ -8,3 +8,4 @@ resources:
   - ext-secret.yaml
   - backup.yaml
   - backup-restore.yaml
+  - ingress.yaml

@@ -10,9 +10,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  vars:
-    - name: PAPERLESS_URL
-      valueFrom:
-        secretKeyRef:
-          name: secret-vars
-          key: paperless-url
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: secret-vars

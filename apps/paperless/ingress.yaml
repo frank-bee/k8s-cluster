@@ -8,7 +8,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: $(PAPERLESS_ROUTE)
+      match: $(paperless_route)
       services:
         - kind: Service
           name: paperless

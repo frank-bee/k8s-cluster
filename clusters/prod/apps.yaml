@@ -14,3 +14,4 @@ spec:
     substituteFrom:
       - kind: Secret
         name: flux-secret-vars
+        optional: false

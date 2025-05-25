@@ -10,8 +10,8 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  postBuild:
-    substituteFrom:
-      - kind: Secret
-        name: flux-secret-vars
-        optional: false
+#  postBuild:
+#    substituteFrom:
+#      - kind: Secret
+#        name: flux-secret-vars
+#        optional: false

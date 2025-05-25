@@ -2,3 +2,5 @@
 /apps/paperless/secret.yaml
 /infra/controllers/awssm-secret.yaml
 /secret-vars.yaml
+infra/controllers/awssm-secret-template.yaml
+dummy.yaml

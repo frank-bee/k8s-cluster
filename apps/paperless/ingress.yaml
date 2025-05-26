@@ -6,6 +6,7 @@ metadata:
 spec:
   entryPoints:
     - web
+    - websecure
   routes:
     - kind: Rule
       match: Host(`${paperless_route}`)
@@ -13,3 +14,8 @@ spec:
         - kind: Service
           name: paperless
           port: 8000
+  tls:
+    certResolver: letsencrypt
+  middlewares:
+    - name: redirect-to-https
+      namespace: default

@@ -121,10 +121,18 @@ metadata:
   annotations:
     # Traefik specific annotations
     kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/router.entrypoints: web
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     # Enable IPv6
     traefik.ingress.kubernetes.io/use-ipv6: "true"
+    # Enable TLS with Traefik's Let's Encrypt integration
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: "letsencrypt"
+    # Apply middleware to redirect HTTP to HTTPS
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-to-https@kubernetescrd
 spec:
+  tls:
+  - hosts:
+    - ${dummy_route}
   rules:
   - host: ${dummy_route}
     http:

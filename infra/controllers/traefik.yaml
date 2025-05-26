@@ -1,0 +1,102 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: traefik
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: traefik
+  namespace: traefik
+spec:
+  interval: 1h
+  url: https://traefik.github.io/charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: traefik
+  namespace: traefik
+spec:
+  targetNamespace: traefik
+  interval: 5m
+  chart:
+    spec:
+      chart: traefik
+      version: "35.4.0"  # Latest version as of May 2025
+      sourceRef:
+        kind: HelmRepository
+        name: traefik
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    # Global namespace for resources
+    global:
+      namespaceOverride: traefik
+    # Deploy Traefik on the specified node pools
+    deployment:
+      enabled: true
+    # Configure Traefik ports
+    ports:
+      web:
+        port: 80
+        # Enable redirecting HTTP to HTTPS
+        redirectTo: websecure
+      websecure:
+        port: 443
+        # Enable TLS on the websecure port
+        tls:
+          enabled: true
+    
+    # Configure ACME (Let's Encrypt)
+    certification:
+      enabled: true
+    
+    # Let's Encrypt configuration
+    certificatesResolvers:
+      default:
+        acme:
+          email: ${le_email_address}
+          storage: /data/acme.json
+          httpChallenge:
+            entryPoint: web
+    
+    # Default TLS options
+    tls:
+      options:
+        default:
+          minVersion: VersionTLS12
+          sniStrict: true
+    
+    # IPv6 support
+    experimental:
+      http3:
+        enabled: true
+    
+    # Default entrypoint for traffic
+    entryPoints:
+      web:
+        address: ":80"
+      websecure:
+        address: ":443"
+        http:
+          tls:
+            certResolver: default  # Use the default certResolver for Let's Encrypt
+    
+    # Additional Traefik configurations
+    additionalArguments:
+      - "--providers.kubernetesingress.ingressclass=traefik"
+      - "--providers.kubernetescrd.ingressclass=traefik"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      
+    # Persistent storage for Let's Encrypt certificates
+    persistence:
+      enabled: true
+      path: /data
+      size: 128Mi

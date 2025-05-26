@@ -72,6 +72,7 @@ spec:
         acme:
           email: ${le_email_address}
           storage: /data/acme.json
+          caServer: https://acme-staging-v02.api.letsencrypt.org/directory
           httpChallenge:
             entryPoint: web
     
@@ -86,6 +87,14 @@ spec:
     experimental:
       http3:
         enabled: true
+    
+    # IPv6 configuration
+    service:
+      ipFamilyPolicy: SingleStack
+      ipFamilies:
+        - IPv6
+      annotations:
+        metallb.universe.tf/allow-shared-ip: true
     
     # Default entrypoint for traffic
     entryPoints:

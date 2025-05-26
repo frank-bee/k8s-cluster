@@ -1,0 +1,138 @@
+---
+# Namespace for IPv6 test resources
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ipv6-test
+---
+# ConfigMap with custom HTML content
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-custom-page
+  namespace: ipv6-test
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>IPv6 Test Page</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          margin: 0;
+          background-color: #f0f0f0;
+        }
+        .message {
+          font-size: 32px;
+          padding: 30px;
+          background-color: #fff;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          text-align: center;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="message">
+        frank says helllllooooo!
+      </div>
+    </body>
+    </html>
+---
+# Nginx Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-ipv6-test
+  namespace: ipv6-test
+  labels:
+    app: nginx-ipv6-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-ipv6-test
+  template:
+    metadata:
+      labels:
+        app: nginx-ipv6-test
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:stable
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-custom-page
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: index.html
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      volumes:
+      - name: nginx-custom-page
+        configMap:
+          name: nginx-custom-page
+---
+# Service for Nginx
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-ipv6-test
+  namespace: ipv6-test
+  labels:
+    app: nginx-ipv6-test
+spec:
+  # Using ClusterIP for IPv6 testing
+  type: NodePort  # Enable IPv6 for this service
+  ipFamilyPolicy: PreferDualStack
+  ipFamilies:
+  - IPv6
+  - IPv4
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: nginx-ipv6-test
+---
+# Traefik Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ipv6-test
+  namespace: ipv6-test
+  annotations:
+    # Traefik specific annotations
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+    # Enable IPv6
+    traefik.ingress.kubernetes.io/use-ipv6: "true"
+spec:
+  rules:
+  - host: ${dummy_route}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-ipv6-test
+            port:
+              number: 80

@@ -64,4 +64,4 @@ metadata:
   namespace: paperless
 stringData:
   username: paperlessuser
-  password: "my_strong_password_123"
+  password: ${paperless_db_password}

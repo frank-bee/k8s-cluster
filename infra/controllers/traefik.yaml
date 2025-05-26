@@ -61,11 +61,11 @@ spec:
         # Enable TLS on the websecure port
         tls:
           enabled: true
-    
+
     # Configure ACME (Let's Encrypt)
     certification:
       enabled: true
-    
+
     # Let's Encrypt configuration
     certificatesResolvers:
       letsencrypt:
@@ -74,19 +74,19 @@ spec:
           storage: /data/acme.json
           httpChallenge:
             entryPoint: web
-    
+
     # Default TLS options
     tls:
       options:
         default:
           minVersion: VersionTLS12
           sniStrict: true
-    
+
     # IPv6 support
     experimental:
       http3:
         enabled: true
-    
+
     # IPv6 configuration
     service:
       ipFamilyPolicy: SingleStack
@@ -94,7 +94,7 @@ spec:
         - IPv6
       annotations:
         metallb.universe.tf/allow-shared-ip: "true"
-    
+
     # Default entrypoint for traffic
     entryPoints:
       web:
@@ -111,12 +111,12 @@ spec:
         http:
           tls:
             certResolver: letsencrypt  # Use the letsencrypt certResolver for Let's Encrypt
-    
+
     # Additional Traefik configurations
     additionalArguments:
       - "--providers.kubernetesingress.ingressclass=traefik"
       - "--providers.kubernetescrd.ingressclass=traefik"
-      
+
     # Persistent storage for Let's Encrypt certificates
     persistence:
       enabled: true

@@ -72,7 +72,6 @@ spec:
         acme:
           email: ${le_email_address}
           storage: /data/acme.json
-          caServer: https://acme-staging-v02.api.letsencrypt.org/directory
           httpChallenge:
             entryPoint: web
     

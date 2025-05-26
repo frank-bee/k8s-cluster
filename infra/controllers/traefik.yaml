@@ -94,7 +94,7 @@ spec:
       ipFamilies:
         - IPv6
       annotations:
-        metallb.universe.tf/allow-shared-ip: true
+        metallb.universe.tf/allow-shared-ip: "true"
     
     # Default entrypoint for traffic
     entryPoints:

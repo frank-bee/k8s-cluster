@@ -19,49 +19,61 @@ spec:
         secretAccessKey:
           name: aws-creds
           key: ACCESS_SECRET_KEY
-  externalClusters:
-    - name: paperless-db
-      barmanObjectStore:
-        destinationPath: "s3://home-prod-pg-backup/backup/paperless"
-        s3Credentials:
-          accessKeyId:
-            name: aws-creds
-            key: ACCESS_KEY_ID
-          secretAccessKey:
-            name: aws-creds
-            key: ACCESS_SECRET_KEY
+#  externalClusters:
+#    - name: paperless-db
+#      barmanObjectStore:
+#        destinationPath: "s3://home-prod-pg-backup/backup/paperless"
+#        s3Credentials:
+#          accessKeyId:
+#            name: aws-creds
+#            key: ACCESS_KEY_ID
+#          secretAccessKey:
+#            name: aws-creds
+#            key: ACCESS_SECRET_KEY
   bootstrap:
     initdb:
       database: paperless
       owner: paperless
       secret:
         name: db-creds
+# ---
+# apiVersion: postgresql.cnpg.io/v1
+# kind: ScheduledBackup
+# metadata:
+#   name: backup-nightly
+#   namespace: paperless
+# spec:
+#   schedule: "0 0 0 * * *"
+#   backupOwnerReference: self
+#   cluster:
+#     name: paperless-db
+# ---
+# apiVersion: postgresql.cnpg.io/v1
+# kind: Backup
+# metadata:
+#   name: backup-initial
+#   namespace: paperless
+# spec:
+#   cluster:
+#     name: paperless-db
 ---
-apiVersion: postgresql.cnpg.io/v1
-kind: ScheduledBackup
-metadata:
-  name: backup-nightly
-  namespace: paperless
-spec:
-  schedule: "0 0 0 * * *"
-  backupOwnerReference: self
-  cluster:
-    name: paperless-db
----
-apiVersion: postgresql.cnpg.io/v1
-kind: Backup
-metadata:
-  name: backup-initial
-  namespace: paperless
-spec:
-  cluster:
-    name: paperless-db
----
-apiVersion: v1
-kind: Secret
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
 metadata:
   name: paperless-db-user
   namespace: paperless
-stringData:
-  username: paperlessuser
-  password: ${paperless_db_password}
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: parameterstore
+    kind: ClusterSecretStore
+  target:
+    name: paperless-db-user
+    creationPolicy: Owner
+  data:
+    - secretKey: username
+      remoteRef:
+        key: home-prod-PAPERLESS_DBUSER
+    - secretKey: password
+      remoteRef:
+        key: home-prod-PAPERLESS_DBPASS

@@ -6,4 +6,5 @@ resources:
   - traefik.yaml
   - longhorn.yaml
   - capacitor.yaml
+  - pg-operator.yaml
 #  - velero.yaml

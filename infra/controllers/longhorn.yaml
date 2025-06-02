@@ -24,6 +24,7 @@ spec:
       interval: 1m
   values:
     persistence:
+      defaultClass: false
     defaultSettings:
       defaultReplicaCount: 2
       defaultDataPath: /var/lib/longhorn

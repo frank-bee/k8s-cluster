@@ -5,7 +5,7 @@ resources:
 #  - database.yaml
 #  - pvc-paperless.yaml
 #  - release.yaml
-#  - ext-secret.yaml
+  - ext-secret.yaml
 #  - backup.yaml
 #  - backup-restore.yaml
 #  - ingress.yaml

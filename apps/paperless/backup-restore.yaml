@@ -60,7 +60,7 @@ spec:
                   echo "[INFO] Ensuring /library/import exists and is writable..."
                   kubectl exec -n paperless "$PAPERLESS_POD" -c main -- sh -c "mkdir -p /library/import && chown 1000:100 /library/import && chmod 770 /library/import"
                   echo "[INFO] Copying restore data into pod..."
-                  kubectl cp /restore/. paperless/$PAPERLESS_POD:/library/import/
+                  kubectl cp /restore/. paperless/$PAPERLESS_POD:/library/import/ -c main
                   echo "[INFO] Fixing permissions on restore data..."
                   kubectl exec -n paperless "$PAPERLESS_POD" -c main -- sh -c "chown -R 1000:100 /library/import"
                   echo "[INFO] Running document_importer inside pod..."

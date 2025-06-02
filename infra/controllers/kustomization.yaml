@@ -5,4 +5,5 @@ resources:
   - provider.yaml
   - traefik.yaml
   - longhorn.yaml
+  - capacitor.yaml
 #  - velero.yaml

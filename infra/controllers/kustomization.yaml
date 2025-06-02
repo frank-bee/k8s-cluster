@@ -4,4 +4,5 @@ resources:
   - external-secrets.yaml
   - provider.yaml
   - traefik.yaml
+  - longhorn.yaml
 #  - velero.yaml

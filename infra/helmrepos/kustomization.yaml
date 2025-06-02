@@ -5,3 +5,4 @@ resources:
 - ./cloud-native-pg.yaml
 - ./external-secrets.yaml
 - ./velero.yaml
+- ./longhorn.yaml

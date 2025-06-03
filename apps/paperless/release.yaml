@@ -58,7 +58,8 @@ spec:
               tag: 2.15.3
             env:
               PAPERLESS_URL: https://paperless.local
-              PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
+              #PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
+              PAPERLESS_APPS: "['allauth.socialaccount.providers.google']"
               PAPERLESS_PORT: "8000"
               PAPERLESS_DATA_DIR: /library/data
               PAPERLESS_MEDIA_ROOT: /library/media

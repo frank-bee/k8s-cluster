@@ -1,21 +1,31 @@
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
   name: paperless
   namespace: paperless
+  annotations:
+    # Traefik specific annotations
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    # Enable IPv6
+    traefik.ingress.kubernetes.io/use-ipv6: "true"
+    # Enable TLS with Traefik's Let's Encrypt integration
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: "letsencrypt"
+    # Apply middleware to redirect HTTP to HTTPS
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-to-https@kubernetescrd
 spec:
-  entryPoints:
-    - web
-    - websecure
-  routes:
-    - kind: Rule
-      match: Host(`${paperless_route}`)
-      services:
-        - kind: Service
-          name: paperless
-          port: 8000
   tls:
-    certResolver: letsencrypt
-  middlewares:
-    - name: redirect-to-https
-      namespace: default
+  - hosts:
+    - ${paperless_route}
+  rules:
+  - host: ${paperless_route}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: paperless
+            port:
+              number: 8000

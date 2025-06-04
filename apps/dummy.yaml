@@ -132,9 +132,20 @@ metadata:
 spec:
   tls:
   - hosts:
+    - ${new_dummy_route}
     - ${dummy_route}
   rules:
   - host: ${dummy_route}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-ipv6-test
+            port:
+              number: 80
+  - host: ${new_dummy_route}
     http:
       paths:
       - path: /

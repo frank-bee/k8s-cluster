@@ -8,16 +8,16 @@ _... managed with Flux_ 🤖
 
 ## 🔍 Overview
 
-This repository contains the configuration for my home Kubernetes cluster. It uses GitOps principles to manage infrastructure and applications.
+This repository contains the configuration for my home Kubernetes cluster. It uses GitOps principles to manage infrastructure and applications with a focus on automation and security.
 
 ### :wrench:&nbsp; Tools
 
 | Tool                                                               | Purpose                                                             |
 |--------------------------------------------------------------------|---------------------------------------------------------------------|
-| [flux](https://toolkit.fluxcd.io/)                                 | Operator that manages your k8s cluster based on your Git repository |
+| [flux](https://toolkit.fluxcd.io/)                                 | GitOps operator that manages your k8s cluster based on your Git repository |
 | [traefik](https://traefik.io/)                                     | Ingress controller with Let's Encrypt ACME integration for HTTPS    |
-| [external-secrets](https://github.com/external-secrets/external-secrets) | Kubernetes Operator for external secrets management |
-| [cloudnative-pg](https://github.com/cloudnative-pg/cloudnative-pg) | Kubernetes Operator for PostgreSQL |
+| [external-secrets](https://github.com/external-secrets/external-secrets) | Kubernetes operator for external secrets management using AWS Parameter Store |
+| [cloudnative-pg](https://github.com/cloudnative-pg/cloudnative-pg) | Kubernetes operator for PostgreSQL databases |
 
 ## 💻 Nodes
 | Node                          | RAM     | Storage            | Function       | Operating System |
@@ -50,6 +50,12 @@ This cluster uses Traefik's built-in Let's Encrypt ACME integration for HTTPS ce
 
 This repository implements security best practices to protect sensitive information:
 
+### External Secrets
+
+All sensitive configuration is stored in AWS Parameter Store and synchronized to the cluster using External Secrets Operator.
+
+The external secrets configuration is defined in `clusters/prod/flux-secret-vars-externalsecret.yaml` which creates Kubernetes secrets from AWS Parameter Store values.
+
 ### Pre-commit Hooks
 
 Git pre-commit hooks automatically scan for sensitive information before allowing commits.
@@ -68,10 +74,25 @@ The hooks check for:
 
 ## ☁️ Cloud Dependencies
 
-While most of my infrastructure and workloads are self-hosted I do rely upon the cloud for certain key parts of my setup. This saves me from having to worry about two things. (1) Dealing with chicken/egg scenarios and (2) services I critically need whether my cluster is online or not.
+While most of my infrastructure and workloads are self-hosted I do rely upon the cloud for certain key parts of my setup. This saves me from having to worry about two things: (1) Dealing with chicken/egg scenarios and (2) services I critically need whether my cluster is online or not.
 
 | Service                       | Use                                                            | Cost    |
 |-------------------------------|----------------------------------------------------------------|---------|
-| AWS account (Free Tier)       | Domain(s), S3, SSM                                             | ~$10/yr |
+| AWS account (Free Tier)       | Domain(s), S3, Parameter Store (SSM) for secrets               | ~$10/yr |
 | [GitHub](https://github.com/) | Hosting this repository and continuous integration/deployments | Free    |
-| Let's Encrypt                 | SSL certificate provider                                       | Free    |
+| Let's Encrypt                 | SSL certificate provider via Traefik                           | Free    |
+
+## 🔄 Cluster Management
+
+The cluster configuration follows a structured approach:
+
+```
+/clusters
+  /prod             # Production environment
+    /flux-system     # Core Flux components
+    apps.yaml        # Applications deployment definitions
+    infra.yaml       # Infrastructure components
+    flux-secret-vars-externalsecret.yaml  # Secret flux variables
+```
+
+Last updated: June 5, 2025

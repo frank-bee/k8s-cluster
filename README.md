@@ -32,8 +32,44 @@ The cluster uses the following storage providers:
 | Storage Provider       | Description                                    |
 |------------------------|------------------------------------------------|
 | Local Path Provisioner | Default k3s storage provisioner                |
+| Longhorn              | Cloud native distributed block storage         |
 
 Container runtime: containerd 2.0.4-k3s2
+
+### Longhorn Configuration
+
+```yaml
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: longhorn-system
+
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: longhorn
+  namespace: longhorn-system
+spec:
+  releaseName: longhorn
+  interval: 5m
+  chart:
+    spec:
+      chart: longhorn
+      version: 1.9.0
+      sourceRef:
+        kind: HelmRepository
+        name: longhorn
+        namespace: flux-system
+      interval: 1m
+  values:
+    persistence:
+      defaultClass: false
+    defaultSettings:
+      defaultReplicaCount: 2
+      defaultDataPath: /var/lib/longhorn
+```
 
 ## 🌐 Applications
 
@@ -81,6 +117,7 @@ While most of my infrastructure and workloads are self-hosted I do rely upon the
 | AWS account (Free Tier)       | Domain(s), S3, Parameter Store (SSM) for secrets               | ~$10/yr |
 | [GitHub](https://github.com/) | Hosting this repository and continuous integration/deployments | Free    |
 | Let's Encrypt                 | SSL certificate provider via Traefik                           | Free    |
+| Cloudflare                    | DNS management, CDN, and DDoS protection (1 domain)            | Free    |
 
 ## 🔄 Cluster Management
 

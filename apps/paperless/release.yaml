@@ -132,9 +132,9 @@ spec:
         controller: main
         type: NodePort
         ipFamilyPolicy: PreferDualStack
-        ipFamilies: 
+        ipFamilies:
           - IPv6
-          - IPv4  
+          - IPv4
         ports:
           http:
             port: 8000

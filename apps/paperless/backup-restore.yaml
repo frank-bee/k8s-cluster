@@ -12,7 +12,7 @@ spec:
       template:
         spec:
           serviceAccountName: paperless-backup-sa
-          restartPolicy: Never 
+          restartPolicy: Never
           volumes:
             - name: restore-volume
               emptyDir: {}

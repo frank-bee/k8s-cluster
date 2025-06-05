@@ -36,26 +36,17 @@ spec:
       owner: paperless
       secret:
         name: db-creds
-# ---
-# apiVersion: postgresql.cnpg.io/v1
-# kind: ScheduledBackup
-# metadata:
-#   name: backup-nightly
-#   namespace: paperless
-# spec:
-#   schedule: "0 0 0 * * *"
-#   backupOwnerReference: self
-#   cluster:
-#     name: paperless-db
-# ---
-# apiVersion: postgresql.cnpg.io/v1
-# kind: Backup
-# metadata:
-#   name: backup-initial
-#   namespace: paperless
-# spec:
-#   cluster:
-#     name: paperless-db
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: backup-nightly
+  namespace: paperless
+spec:
+  schedule: "0 0 0 * * *"
+  backupOwnerReference: self
+  cluster:
+    name: paperless-db
 ---
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret

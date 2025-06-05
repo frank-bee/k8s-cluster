@@ -36,41 +36,6 @@ The cluster uses the following storage providers:
 
 Container runtime: containerd 2.0.4-k3s2
 
-### Longhorn Configuration
-
-```yaml
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: longhorn-system
-
----
-apiVersion: helm.toolkit.fluxcd.io/v2beta2
-kind: HelmRelease
-metadata:
-  name: longhorn
-  namespace: longhorn-system
-spec:
-  releaseName: longhorn
-  interval: 5m
-  chart:
-    spec:
-      chart: longhorn
-      version: 1.9.0
-      sourceRef:
-        kind: HelmRepository
-        name: longhorn
-        namespace: flux-system
-      interval: 1m
-  values:
-    persistence:
-      defaultClass: false
-    defaultSettings:
-      defaultReplicaCount: 2
-      defaultDataPath: /var/lib/longhorn
-```
-
 ## 🌐 Applications
 
 | Application                    | URL                                       | Description                                 |

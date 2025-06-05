@@ -31,7 +31,7 @@ spec:
                   echo "[INFO] Running document_exporter inside pod..."
                   kubectl exec -n paperless "$PAPERLESS_POD" -c main -- document_exporter /library/export
                   echo "[INFO] Copying exported data from pod to shared volume..."
-                  kubectl cp paperless/"$PAPERLESS_POD":/library/export/. /export/
+                  kubectl cp paperless/"$PAPERLESS_POD":/library/export/. /export/ -c main
                   echo "[INFO] Export completed successfully."
               volumeMounts:
                 - name: export-volume

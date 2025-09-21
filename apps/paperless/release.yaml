@@ -55,7 +55,7 @@ spec:
               - redis
             image:
               repository: ghcr.io/paperless-ngx/paperless-ngx
-              tag: 2.15.3
+              tag: 2.18.4
             env:
               PAPERLESS_URL: https://${paperless_route}
               #PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect

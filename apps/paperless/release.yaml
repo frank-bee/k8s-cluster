@@ -63,8 +63,8 @@ spec:
               PAPERLESS_PORT: "8000"
               PAPERLESS_DATA_DIR: /library/data
               PAPERLESS_MEDIA_ROOT: /library/media
-              PAPERLESS_OCR_LANGUAGES: fin eng
-              PAPERLESS_OCR_LANGUAGE: fin+eng
+              PAPERLESS_OCR_LANGUAGES: deu eng
+              PAPERLESS_OCR_LANGUAGE: deu+eng
               PAPERLESS_REDIS: redis://localhost:6379
               PAPERLESS_TASK_WORKERS: 2
               PAPERLESS_TIKA_ENABLED: 1

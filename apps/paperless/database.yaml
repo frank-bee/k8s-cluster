@@ -8,17 +8,19 @@ spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:16
   storage:
     size: 10Gi
-  backup:
-    barmanObjectStore:
-      destinationPath: "s3://home-prod-pg-backup/backup/paperless"
-      serverName: "paperless-db-new"
-      s3Credentials:
-        accessKeyId:
-          name: aws-creds
-          key: ACCESS_KEY_ID
-        secretAccessKey:
-          name: aws-creds
-          key: ACCESS_SECRET_KEY
+  # Temporarily disabled due to WAL accumulation issue - 245GB of WAL files
+  # TODO: Fix S3 backup configuration and re-enable
+  # backup:
+  #   barmanObjectStore:
+  #     destinationPath: "s3://home-prod-pg-backup/backup/paperless"
+  #     serverName: "paperless-db-new"
+  #     s3Credentials:
+  #       accessKeyId:
+  #         name: aws-creds
+  #         key: ACCESS_KEY_ID
+  #       secretAccessKey:
+  #         name: aws-creds
+  #         key: ACCESS_SECRET_KEY
 #  externalClusters:
 #    - name: paperless-db
 #      barmanObjectStore:
@@ -37,16 +39,17 @@ spec:
       secret:
         name: db-creds
 ---
-apiVersion: postgresql.cnpg.io/v1
-kind: ScheduledBackup
-metadata:
-  name: backup-nightly
-  namespace: paperless
-spec:
-  schedule: "0 0 0 * * *"
-  backupOwnerReference: self
-  cluster:
-    name: paperless-db
+# Temporarily disabled while fixing WAL archiving issue
+# apiVersion: postgresql.cnpg.io/v1
+# kind: ScheduledBackup
+# metadata:
+#   name: backup-nightly
+#   namespace: paperless
+# spec:
+#   schedule: "0 0 0 * * *"
+#   backupOwnerReference: self
+#   cluster:
+#     name: paperless-db
 ---
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
